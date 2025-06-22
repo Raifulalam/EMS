@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import './Login.css'
 
 function LoginComponents() {
-    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Name:', name);
+        console.log('Email:', email);
         console.log('Password:', password);
         console.log('Role:', role);
         // You can perform login logic here
@@ -17,13 +17,15 @@ function LoginComponents() {
     return (
         <div className="login_container">
             <div className="loginPage">
+                <h2>Welcome Back Guest </h2>
+                <p>Please enter the details to login</p>
                 <div className="login">
                     <form onSubmit={handleSubmit}>
                         <input
                             type="text"
-                            placeholder="Name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Enter you email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <input
                             type="password"

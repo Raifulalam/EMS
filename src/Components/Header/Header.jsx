@@ -6,7 +6,7 @@ function Header() {
         <div className="headerContainer">
             <div className="header">
                 <Link to="/login">Login</Link>
-                <Link to="#">Signup</Link>
+                <Link to="/signup">Signup</Link>
             </div>
         </div>
     );
