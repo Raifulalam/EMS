@@ -6,7 +6,7 @@ function SignupComponent() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
-    const [role, setRole] = useState("");
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -14,7 +14,6 @@ function SignupComponent() {
         console.log("Email:", email);
         console.log("Password:", password);
         console.log("Phone:", phone);
-        console.log("Role:", role);
         // You can add API call here to send data to backend
     };
 
@@ -62,16 +61,7 @@ function SignupComponent() {
                             required
                         />
 
-                        <select
-                            name="role"
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            required
-                        >
-                            <option value="">Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                        </select>
+
 
                         <button type="submit">Sign Up</button>
                     </form>

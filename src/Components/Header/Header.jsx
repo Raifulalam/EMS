@@ -4,16 +4,17 @@ import './Header.css';
 
 function Header() {
     return (
-        <div className="headerContainer">
-            <div className="header">
+        <header className="headerContainer">
+            <div className="logo">EventEase</div>
+            <nav className="navLinks">
                 <Link to="/">Home</Link>
                 <Link to="/login">Login</Link>
                 <Link to="/signup">Signup</Link>
-                <Link to="/event-list">Events List</Link>
+                <Link to="/event-list">Events</Link>
                 <Link to="/filter-event">Find Events</Link>
                 <Link to="/logout">Logout</Link>
-            </div>
-        </div>
+            </nav>
+        </header>
     );
 }
 
