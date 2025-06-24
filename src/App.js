@@ -4,6 +4,7 @@ import Header from './Components/Header/Header';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignupComponent from './Components/Signup/Signup';
 import HomeComponents from './Components/LandingPage/Home';
+import EventRegistrationComponent from './Components/Events/EventRegistrations/EventRegistration'
 
 function App() {
   return (
@@ -13,6 +14,8 @@ function App() {
         <Route path='/' element={<HomeComponents />} />
         <Route path="/login" element={<LoginComponents />} />
         <Route path="/signup" element={<SignupComponent />} />
+        <Route path="/register-for-event" element={<EventRegistrationComponent />} />
+
         {/* Add more routes here */}
       </Routes>
     </BrowserRouter>

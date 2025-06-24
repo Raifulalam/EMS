@@ -1,0 +1,94 @@
+/* EventRegistration.css */
+.registration-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to right, #f0f0f0, #ffffff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.registration-card {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 480px;
+}
+
+.event-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    text-align: center;
+}
+
+.event-subtitle {
+    font-size: 15px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.registration-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.registration-form label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #444;
+}
+
+.registration-form input,
+.registration-form textarea {
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.3s ease;
+}
+
+.registration-form input:focus,
+.registration-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.registration-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.register-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #0056b3;
+}
+
+.pay-link {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.pay-link:hover {
+    text-decoration: underline;
+}
