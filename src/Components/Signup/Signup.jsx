@@ -77,7 +77,7 @@ function SignupComponent() {
                     </form>
                 </div>
                 <p>Alredy have an account?</p>
-                <a href="/login">login</a>
+                <a href="/login">Login</a>
             </div>
         </div>
     );

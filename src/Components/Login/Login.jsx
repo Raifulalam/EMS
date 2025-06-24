@@ -41,6 +41,8 @@ function LoginComponents() {
                         <button type="submit">Login</button>
                     </form>
                 </div>
+                <p>Don't have an account?</p>
+                <a href="/signup">Create now</a>
             </div>
         </div>
     );

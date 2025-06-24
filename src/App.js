@@ -3,13 +3,14 @@ import LoginComponents from './Components/Login/Login';
 import Header from './Components/Header/Header';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignupComponent from './Components/Signup/Signup';
-
+import HomeComponents from './Components/LandingPage/Home';
 
 function App() {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
+        <Route path='/' element={<HomeComponents />} />
         <Route path="/login" element={<LoginComponents />} />
         <Route path="/signup" element={<SignupComponent />} />
         {/* Add more routes here */}
