@@ -17,7 +17,7 @@ function EventCard({ event }) {
                 <p><strong>Location:</strong> {event.location}</p>
                 <p><strong>Description:</strong> {event.description}</p>
             </div>
-            <button className='register-btn' onClick={handleClick}>Register</button>
+            <button className='register-btn' onClick={handleClick}>Register Now</button>
         </div>
     );
 }

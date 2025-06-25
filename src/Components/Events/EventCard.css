@@ -33,4 +33,10 @@
     color: rgb(255, 255, 255);
     border: none;
     border-radius: 8px;
+    cursor: pointer;
+}
+
+.register-btn:hover {
+    background-color: rgb(64, 64, 221);
+    ;
 }

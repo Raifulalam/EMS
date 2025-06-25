@@ -43,9 +43,10 @@ function EventList() {
 
     return (
         <div className='container'>
-            <h2>Register now to attend the events</h2>
+            <h2>Register now to attend our upcoming events</h2>
 
             <div className="event-list">
+
                 {events.map((event, index) => (
                     <EventCard key={index} event={event} />
                 ))}
