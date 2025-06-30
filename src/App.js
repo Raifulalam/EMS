@@ -1,8 +1,8 @@
 import './App.css';
-import LoginComponents from './Components/Login/Login';
+import LoginComponents from './Components/Auth/Login';
 import Header from './Components/Header/Header';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import SignupComponent from './Components/Signup/Signup';
+import SignupComponent from './Components/Auth/Signup';
 import EventRegistrationComponent from './Components/Events/EventRegistrations/EventRegistration'
 import HomePage from './Components/LandingPage/HomePage';
 import FindEvents from './Components/Events/FindEvent';

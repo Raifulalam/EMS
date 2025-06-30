@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import './Login.css'
-
+import { useNavigate } from 'react-router-dom';
+import API from '../../api';
 function LoginComponents() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Email:', email);
         console.log('Password:', password);
         console.log('Role:', role);
         // You can perform login logic here
+        e.preventDefault();
+        try {
+            const res = await API.post('/auth/login', { email, password });
+            localStorage.setItem('token', res.data.token);
+            navigate('/');
+        } catch (err) {
+            alert('Invalid credentials');
+        }
     };
 
     return (
