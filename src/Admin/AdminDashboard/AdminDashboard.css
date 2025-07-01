@@ -1,0 +1,61 @@
+.admin-dashboard {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #1e1e2f;
+    color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar h2 {
+    margin-bottom: 30px;
+    font-size: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.sidebar li:hover {
+    color: #ffce00;
+}
+
+.dashboard-main {
+    flex: 1;
+    padding: 30px;
+    background-color: #f5f6fa;
+    overflow-y: auto;
+}
+
+.dashboard-main h1 {
+    margin-bottom: 20px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.dashboard-card {
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}

@@ -1,0 +1,35 @@
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e1e2f;
+    color: #fff;
+    padding: 15px 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.admin-header .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffce00;
+}
+
+.admin-nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.admin-nav a:hover {
+    color: #ffce00;
+}
+
+.logout {
+    color: #ff4c4c;
+}
+
+.logout:hover {
+    color: #ff0000;
+}

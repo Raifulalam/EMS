@@ -1,25 +1,36 @@
-import React, { useState } from 'react';
-import './Login.css'
+import React, { useState, useContext } from 'react';
+import './Login.css';
 import { useNavigate } from 'react-router-dom';
 import API from '../../api';
+import { UserContext } from '../Auth/authContext'
+
 function LoginComponents() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('');
+    const { setUser } = useContext(UserContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Role:', role);
-        // You can perform login logic here
-        e.preventDefault();
         try {
             const res = await API.post('/auth/login', { email, password });
             localStorage.setItem('token', res.data.token);
-            navigate('/');
+
+            // Fetch user data after login
+            const userRes = await API.get('/auth/me');
+            setUser(userRes.data);
+
+            // Redirect based on user role
+            if (userRes.data.role === 'admin') {
+                navigate('/admin-dashboard');
+            } else if (userRes.data.role === 'user') {
+                navigate('/user-dashboard'); // or home `/`
+            } else {
+                alert('Unknown role');
+            }
+
         } catch (err) {
+            console.error(err);
             alert('Invalid credentials');
         }
     };
@@ -27,32 +38,28 @@ function LoginComponents() {
     return (
         <div className="login_container">
             <div className="loginPage">
-                <h2>Welcome Back Guest </h2>
-                <p>Please enter the details to login</p>
+                <h2>Welcome Back</h2>
+                <p>Please enter your details to login</p>
                 <div className="login">
                     <form onSubmit={handleSubmit}>
                         <input
-                            type="text"
-                            placeholder="Enter you email"
+                            type="email"
+                            placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
                         <input
                             type="password"
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
                         />
-                        <select value={role} onChange={(e) => setRole(e.target.value)}>
-                            <option value="">Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                        </select>
                         <button type="submit">Login</button>
                     </form>
                 </div>
-                <p>Don't have an account?</p>
-                <a href="/signup">Create now</a>
+                <p>Don't have an account? <a href="/signup">Create now</a></p>
             </div>
         </div>
     );

@@ -15,6 +15,7 @@ const UserProvider = ({ children }) => {
                 const response = await API.get("/auth/me");
                 setUser(response.data);
 
+
             } catch (error) {
                 console.error(error);
             }
