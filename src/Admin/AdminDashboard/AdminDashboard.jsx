@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './AdminDashboard.css';
 import DashboardCard from './DashboardCard';
-import AdminHeader from '../Header';
+import { UserContext } from '../../Components/Auth/authContext';
+import { Navigate } from 'react-router-dom';
+
 function AdminDashboard() {
+    const { user } = useContext(UserContext);
+
     const stats = [
         { title: 'Total Events', count: 42, color: '#4caf50' },
         { title: 'Registered Users', count: 187, color: '#2196f3' },
@@ -10,9 +14,13 @@ function AdminDashboard() {
         { title: 'Revenue', count: '$4,250', color: '#9c27b0' }
     ];
 
+    // 🚫 Block access for non-admins
+    if (!user || user.role !== 'admin') {
+        return <Navigate to="/login" />; // or return <p>Access Denied</p>;
+    }
+
     return (
         <div className="admin-dashboard">
-            <AdminHeader />
             <aside className="sidebar">
                 <h2>Admin Panel</h2>
                 <ul>
@@ -23,8 +31,9 @@ function AdminDashboard() {
                     <li>Settings</li>
                 </ul>
             </aside>
+
             <main className="dashboard-main">
-                <h1>Welcome, Admin</h1>
+                <h1>Welcome, {user.name}</h1>
                 <div className="cards">
                     {stats.map((item, index) => (
                         <DashboardCard
