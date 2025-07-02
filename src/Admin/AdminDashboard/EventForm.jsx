@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-// import './EventForm.css';
+import './EventForm.css';
 import { UserContext } from '../../Components/Auth/authContext';
 import API from '../../api';
 

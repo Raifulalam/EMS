@@ -27,9 +27,14 @@
 }
 
 .logout {
-    color: #ff4c4c;
+    padding: 8px 10px;
+    color: #fff9f9;
+    background-color: rgb(238, 38, 38);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 .logout:hover {
-    color: #ff0000;
+    color: #e25757;
 }

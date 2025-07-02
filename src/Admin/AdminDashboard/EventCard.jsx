@@ -5,7 +5,7 @@ function EventCard({ event, onEdit, onDelete }) {
     return (
         <div className="event-card">
             <img src={event.image || 'https://via.placeholder.com/150'} alt="Event" />
-            <h2>{event.name}</h2>
+            <h4>{event.name}</h4>
             <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
             <p><strong>Time:</strong> {event.time}</p>
             <p><strong>Location:</strong> {event.location}</p>
