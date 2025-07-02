@@ -26,7 +26,7 @@ function App() {
           <Route path="/event-list" element={<FindEvents />} />
           <Route path="/event-list/register-for-event" element={<EventRegistrationComponent />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/manage-event" element={<AdminEventManager />} />
+          <Route path="/admin/events" element={<AdminEventManager />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>

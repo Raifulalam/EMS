@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
+// import './EventForm.css';
+import { UserContext } from '../../Components/Auth/authContext';
+import API from '../../api';
 
 function EventForm({ onSuccess, eventData }) {
+    const user = useContext(UserContext);
+
     const [form, setForm] = useState({
         name: '',
         image: '',
@@ -9,7 +13,7 @@ function EventForm({ onSuccess, eventData }) {
         time: '',
         content: '',
         location: '',
-        status: 'upcoming'
+        status: 'upcoming',
     });
 
     useEffect(() => {
@@ -22,30 +26,50 @@ function EventForm({ onSuccess, eventData }) {
     }, [eventData]);
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+
+        const dataToSend = {
+            ...form
+        };
+
         try {
+            console.log("Submitting event:", dataToSend);
             if (eventData) {
-                await axios.put(`/api/events/${eventData._id}`, form);
+                await API.put(`/events/${eventData._id}`, dataToSend);
             } else {
-                await axios.post('/api/events', form);
+                await API.post('/events/create', dataToSend);
             }
             onSuccess();
-            setForm({ name: '', image: '', date: '', time: '', content: '', location: '', status: 'upcoming' });
+            setForm({
+                name: '',
+                image: '',
+                date: '',
+                time: '',
+                content: '',
+                location: '',
+                status: 'upcoming',
+            });
         } catch (err) {
-            console.error(err);
+            if (err.response) {
+                console.error("Server error:", err.response.data);
+            } else {
+                console.error("Submission failed:", err.message);
+            }
         }
     };
 
     return (
         <form className="event-form" onSubmit={handleSubmit}>
-            <input name="name" value={form.name} onChange={handleChange} placeholder="Creator ID" required />
+            <input name="name" value={form.name} onChange={handleChange} placeholder="Event Name" required />
             <input name="image" value={form.image} onChange={handleChange} placeholder="Image URL" />
             <input type="date" name="date" value={form.date} onChange={handleChange} required />
-            <input name="time" value={form.time} onChange={handleChange} placeholder="Time" required />
+            <input name="time" value={form.time} onChange={handleChange} placeholder="Time (e.g., 6:00 PM)" required />
             <input name="content" value={form.content} onChange={handleChange} placeholder="Description" required />
             <input name="location" value={form.location} onChange={handleChange} placeholder="Location" required />
             <select name="status" value={form.status} onChange={handleChange}>

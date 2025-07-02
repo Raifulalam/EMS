@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import EventForm from './EventForm';
 import EventCard from './EventCard';
+import EventForm from './EventForm';
 import './AdminEventManager.css';
+import API from '../../api';
 
 function AdminEventManager() {
     const [events, setEvents] = useState([]);
@@ -11,7 +12,7 @@ function AdminEventManager() {
 
     const fetchEvents = async () => {
         try {
-            const res = await axios.get('/api/events');
+            const res = await API.get('/events/getEvent');
             setEvents(res.data);
         } catch (err) {
             console.error(err);
