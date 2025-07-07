@@ -55,8 +55,8 @@ function EventList() {
 
     return (
         <div className='container'>
-            <h2>Register now to attend </h2>
-            <h3>our upcoming events</h3>
+            <h2>Register now to attend our upcoming events</h2>
+
 
             {/* Filters */}
             <div className="filters">
