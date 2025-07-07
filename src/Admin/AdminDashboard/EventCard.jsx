@@ -9,9 +9,12 @@ function EventCard({ event, onEdit, onDelete }) {
             <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
             <p><strong>Time:</strong> {event.time}</p>
             <p><strong>Location:</strong> {event.location}</p>
+            <p><strong>Organized By:</strong> {event.organizer}</p>
+            <p><strong>Price:</strong> {event.price}</p>
 
             <p><strong>Description:</strong> {event.content}</p>
             <p><strong>Status:</strong> {event.status}</p>
+
             <div className="actions">
                 <button onClick={onEdit}>Edit</button>
                 <button onClick={onDelete} className="delete">Delete</button>

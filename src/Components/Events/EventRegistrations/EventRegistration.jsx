@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './EventRegistration.css';
+import { UserContext } from '../../Auth/authContext';
 
 function EventRegistrationComponent() {
-    const [name, setName] = useState("");
+    const user = useContext(UserContext);
+    const [name, setName] = useState(user.name);
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [eventName, setEventName] = useState("");

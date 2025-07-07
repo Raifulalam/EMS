@@ -11,7 +11,7 @@ import UserProvider from './Components/Auth/authContext';
 import DynamicHeader from './DynamicHeader';
 import AdminEventManager from './Admin/AdminDashboard/EventManager';
 import UserList from './Admin/AdminDashboard/Userlist';
-
+import MyBookings from './Components/Events/EventRegistrations/MyBookings';
 function App() {
   return (
     <UserProvider>
@@ -29,6 +29,8 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/admin/events" element={<AdminEventManager />} />
           <Route path="/admin/users" element={<UserList />} />
+          <Route path="/my-bookings" element={<MyBookings />} />
+
 
         </Routes>
       </BrowserRouter>

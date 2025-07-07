@@ -14,6 +14,8 @@ function EventForm({ onSuccess, eventData }) {
         content: '',
         location: '',
         status: 'upcoming',
+        organizer: '',
+        price: ''
     });
 
     useEffect(() => {
@@ -54,6 +56,8 @@ function EventForm({ onSuccess, eventData }) {
                 content: '',
                 location: '',
                 status: 'upcoming',
+                organizer: '',
+                price: '',
             });
         } catch (err) {
             if (err.response) {
@@ -72,6 +76,8 @@ function EventForm({ onSuccess, eventData }) {
             <input name="time" value={form.time} onChange={handleChange} placeholder="Time (e.g., 6:00 PM)" required />
             <input name="content" value={form.content} onChange={handleChange} placeholder="Description" required />
             <input name="location" value={form.location} onChange={handleChange} placeholder="Location" required />
+            <input name="organizer" value={form.organizer} onChange={handleChange} placeholder="Organizer" required />
+            <input name="price" value={form.price} onChange={handleChange} placeholder="Price" required />
             <select name="status" value={form.status} onChange={handleChange}>
                 <option value="upcoming">Upcoming</option>
                 <option value="expired">Expired</option>

@@ -24,7 +24,7 @@ function LoginComponents() {
             if (userRes.data.role === 'admin') {
                 navigate('/admin-dashboard');
             } else if (userRes.data.role === 'user') {
-                navigate('/user-dashboard'); // or home `/`
+                navigate('/'); // or home `/`
             } else {
                 alert('Unknown role');
             }
