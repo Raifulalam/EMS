@@ -10,6 +10,7 @@ import AdminDashboard from './Admin/AdminDashboard/AdminDashboard';
 import UserProvider from './Components/Auth/authContext';
 import DynamicHeader from './DynamicHeader';
 import AdminEventManager from './Admin/AdminDashboard/EventManager';
+import UserList from './Admin/AdminDashboard/Userlist';
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
           <Route path="/event-list/register-for-event" element={<EventRegistrationComponent />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/admin/events" element={<AdminEventManager />} />
+          <Route path="/admin/users" element={<UserList />} />
+
         </Routes>
       </BrowserRouter>
     </UserProvider>

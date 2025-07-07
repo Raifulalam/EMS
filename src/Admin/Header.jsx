@@ -18,7 +18,7 @@ function AdminHeader() {
                 <Link to="/admin-dashboard">Dashboard</Link>
                 <Link to="/admin/events">Manage Events</Link>
                 <Link to="/admin/users">Users</Link>
-                <Link to="/admin/reports">Reports  </Link>
+                {/* <Link to="/admin/reports">Reports  </Link> */}
                 <button className="logout" onClick={handleLogout}>Logout</button>
             </nav>
         </header>

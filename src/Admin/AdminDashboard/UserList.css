@@ -1,0 +1,26 @@
+.user-list {
+    width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.user-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.info-msg {
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+}
+
+.error-msg {
+    text-align: center;
+    color: red;
+}
