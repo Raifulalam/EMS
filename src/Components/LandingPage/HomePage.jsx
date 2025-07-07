@@ -10,7 +10,7 @@ function HomePage() {
                 <p>Your one-stop solution for managing and attending events.</p>
                 <div className="home-buttons">
                     <Link to="/event-list" className="home-btn">View Events</Link>
-                    <Link to="/register-event" className="home-btn">Register for Event</Link>
+                    <Link to="#" className="home-btn">Register for Event</Link>
                     <Link to="/login" className="home-btn secondary">Login</Link>
                 </div>
             </header>
