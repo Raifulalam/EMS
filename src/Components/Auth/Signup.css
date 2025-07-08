@@ -1,53 +1,95 @@
-.signup_component {
+.signup-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: linear-gradient(135deg, #e0eafc, #cfdef3);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 30px 20px;
+    min-height: 100vh;
+    background: #f4f6f8;
 }
 
-.signupPage {
-    background-color: #fff;
-    padding: 30px;
+.signup-box {
+    width: 100%;
+    max-width: 400px;
+    background: white;
     border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    width: 350px;
+    padding: 30px 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.signupPage h2 {
+h2 {
     margin-bottom: 10px;
+    text-align: center;
     color: #333;
 }
 
-.signupPage p {
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #777;
+.subtitle {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    color: #666;
 }
 
-.signup input,
-.signup select {
+form label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+}
+
+form input {
     width: 100%;
+    padding: 10px 12px;
     margin-bottom: 15px;
-    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease;
 }
 
-.signup button {
+form input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button[type="submit"] {
     width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    border: none;
+    background: #007bff;
     color: white;
-    font-weight: bold;
-    border-radius: 6px;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
     transition: background 0.3s ease;
 }
 
-.signup button:hover {
-    background-color: #0056b3;
+button[type="submit"]:hover {
+    background: #0056b3;
+}
+
+.error {
+    color: red;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.login-text {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+.login-text a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-text a:hover {
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 500px) {
+    .signup-box {
+        padding: 25px 15px;
+    }
 }

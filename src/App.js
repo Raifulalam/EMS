@@ -1,6 +1,6 @@
 import './App.css';
 import LoginComponents from './Components/Auth/Login';
-import Header from './Components/Header/Header';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignupComponent from './Components/Auth/Signup';
 import EventRegistrationComponent from './Components/Events/EventRegistrations/EventRegistration';
@@ -12,6 +12,7 @@ import DynamicHeader from './DynamicHeader';
 import AdminEventManager from './Admin/AdminDashboard/EventManager';
 import UserList from './Admin/AdminDashboard/Userlist';
 import MyBookings from './Components/Events/EventRegistrations/MyBookings';
+import UserDashboard from './Components/userDashboard/Userdashboard';
 function App() {
   return (
     <UserProvider>
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginComponents />} />
           <Route path="/signup" element={<SignupComponent />} />
+          <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/event-list" element={<FindEvents />} />
           <Route path="/event-list/register-for-event" element={<EventRegistrationComponent />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />

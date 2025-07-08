@@ -16,17 +16,21 @@ function Header() {
         <header className="headerContainer">
             <div className="logo">EventEase</div>
             <nav className="navLinks">
-                <Link to="/">Home</Link>
+
                 {
                     isLoggedIn ? (
                         <>
+                            <Link to="/dashboard">Dashboard</Link>
                             <Link to="/event-list">Events</Link>
+
                             <Link to="/my-bookings">My Bookings</Link>
                             <Link onClick={handleLogout}>Logout</Link>
 
                         </>
                     ) : (
                         <>
+
+                            <Link to="/">Home</Link>
                             <Link to="/login">Login</Link>
                             <Link to="/signup">Signup</Link>
                         </>
