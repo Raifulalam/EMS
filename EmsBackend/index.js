@@ -8,7 +8,6 @@ const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/events');
 const eventRoutes = require('./routes/events');
 const userRoutes = require('./routes/user');
-const seedOnce = require('./seed');
 const BookingRoutes = require('./routes/booking');
 
 const app = express();
@@ -20,7 +19,7 @@ mongoose.connect(process.env.MONGODB_URI, {
     useUnifiedTopology: true
 }).then(() => console.log('✅ MongoDB connected'))
     .catch(err => console.log('❌ DB error:', err));
-seedOnce();
+
 // API routes
 
 app.use('/api/events', eventRoutes);
