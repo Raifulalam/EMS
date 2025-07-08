@@ -18,30 +18,22 @@ function LoginComponents() {
 
             // Fetch user data after login
             const userRes = await API.get('/auth/me');
-            const user = userRes.data;
-
-            if (!user) {
-                alert("User data not found.");
-                return;
-            }
-
-            setUser(user);
+            setUser(userRes.data);
 
             // Redirect based on user role
-            if (user.role === 'admin') {
+            if (userRes.data.role === 'admin') {
                 navigate('/admin-dashboard');
-            } else if (user.role === 'user') {
-                navigate('/');
+            } else if (userRes.data.role === 'user') {
+                navigate('/'); // or home `/`
             } else {
                 alert('Unknown role');
             }
 
         } catch (err) {
-            console.error("Login Error:", err);
+            console.error(err);
             alert('Invalid credentials');
         }
     };
-
 
     return (
         <div className="login_container">
