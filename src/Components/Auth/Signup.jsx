@@ -12,22 +12,27 @@ function SignupComponent() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Name:", name);
-        console.log("Email:", email);
-        console.log("Password:", password);
-        console.log("Phone:", phone);
-        // You can add API call here to send data to backend
         try {
-            await API.post('/auth/register', {
+            const res = await API.post('/auth/register', {
                 name,
+                email,
                 password,
-                phone,
-                email
+                phone
             });
-            navigate('/login');
+
+            const token = res.data.token;
+            if (token) {
+                localStorage.setItem('token', token); // ✅ Save token to localStorage
+                alert('Registration successful! You are now logged in.');
+                navigate('/'); // Or navigate to dashboard
+            } else {
+                alert('Registration successful, but no token received.');
+                navigate('/login');
+            }
+
         } catch (err) {
-            console.log(err);
-            alert('Registration failed', err);
+            console.error("Signup error:", err);
+            alert('Registration failed: ' + (err.response?.data?.message || err.message));
         }
     };
 

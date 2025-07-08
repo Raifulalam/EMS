@@ -11,11 +11,28 @@ exports.register = async (req, res) => {
         const hashed = await bcrypt.hash(password, 10);
         const user = await User.create({ name, email, phone, password: hashed });
 
-        res.status(201).json({ message: 'User created', user });
+        // ✅ Generate JWT token
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+            expiresIn: '7d'
+        });
+
+        // ✅ Return token along with user info
+        res.status(201).json({
+            message: 'User created successfully',
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        });
     } catch (err) {
+        console.error('Register error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 };
+
 
 exports.login = async (req, res) => {
     try {
