@@ -29,10 +29,10 @@ function SignupComponent() {
             if (token) {
                 localStorage.setItem('token', token);
                 alert('Registration successful!');
-                navigate('/');
+                navigate('/login');
             } else {
                 alert('Registered but no token received.');
-                navigate('/login');
+
             }
 
         } catch (err) {

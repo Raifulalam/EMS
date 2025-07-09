@@ -15,9 +15,9 @@ import MyBookings from './Components/Events/EventRegistrations/MyBookings';
 import UserDashboard from './Components/userDashboard/Userdashboard';
 function App() {
   return (
-    <UserProvider>
-      <BrowserRouter>
 
+    <BrowserRouter>
+      <UserProvider>
         <DynamicHeader />
 
 
@@ -35,8 +35,9 @@ function App() {
 
 
         </Routes>
-      </BrowserRouter>
-    </UserProvider>
+      </UserProvider>
+    </BrowserRouter>
+
   );
 }
 

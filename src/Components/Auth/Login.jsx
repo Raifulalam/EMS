@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './Login.css';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../../api';
+import { UserContext } from './authContext'; // adjust path if needed
 
 function LoginComponents() {
     const [email, setEmail] = useState('');
@@ -10,26 +11,29 @@ function LoginComponents() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const { setUser } = useContext(UserContext);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
         try {
-            // Step 1: Login user and get token
+            // Step 1: Login
             const res = await API.post('/auth/login', { email, password });
             const token = res.data.token;
 
-            if (!token) {
-                throw new Error("Token not received");
-            }
+            if (!token) throw new Error("Token not received");
 
             localStorage.setItem('token', token);
 
-            // Step 2: Fetch user details
+            // Step 2: Fetch current user
             const userRes = await API.get('/auth/me');
             const user = userRes.data;
-            console.log('User data:', user);
+
+            console.log('✅ User data:', user);
+
+            setUser(user); // ✅ Update context for entire app
 
             // Step 3: Redirect based on role
             if (user.role === 'admin') {
@@ -40,7 +44,7 @@ function LoginComponents() {
 
         } catch (err) {
             console.error('Login error:', err);
-            setError(err.response?.data?.message || err.message || 'Login failed');
+            setError(err.response?.data?.error || err.message || 'Login failed');
         } finally {
             setLoading(false);
         }

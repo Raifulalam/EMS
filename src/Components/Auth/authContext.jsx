@@ -1,6 +1,6 @@
-// src/context/UserContext.js
-import React, { createContext, useState, useEffect } from "react";
-import API from "../../api";
+// authContext.js
+import React, { createContext, useState, useEffect } from 'react';
+import API from '../../api';
 
 export const UserContext = createContext();
 
@@ -9,25 +9,19 @@ const UserProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const token = localStorage.getItem("token");
-
+            const token = localStorage.getItem('token');
             if (!token) return;
 
             try {
-                // Set token in Authorization header
-                API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-                const response = await API.get("/auth/me");
-                setUser(response.data);
-            } catch (error) {
-                console.error("Failed to fetch user info:", error);
-                // Optional: clear token if invalid
-                localStorage.removeItem("token");
+                const res = await API.get('/auth/me');
+                setUser(res.data);
+            } catch (err) {
+                console.error('Auth fetch error:', err);
             }
         };
 
         fetchUser();
-    }, []);
+    }, []); // only runs once on mount
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
