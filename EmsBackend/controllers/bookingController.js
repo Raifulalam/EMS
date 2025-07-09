@@ -1,11 +1,25 @@
 const Booking = require('../models/booking')
 const Event = require('../models/Event');
 
+// Create a new bookingconst Booking = require('../models/booking');
+const Event = require('../models/Event');
+
 // Create a new booking
 exports.createBooking = async (req, res) => {
     try {
         const { eventId, numberOfSeats, paymentStatus, transactionId } = req.body;
-        const userId = req.user._id; // Assuming you use JWT auth middleware
+
+        // Check if req.user is attached properly
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ message: 'Unauthorized: user not found in request' });
+        }
+
+        const userId = req.user._id;
+
+        // Validate required fields
+        if (!eventId || !numberOfSeats || !paymentStatus || !transactionId) {
+            return res.status(400).json({ message: 'Missing required booking fields' });
+        }
 
         const event = await Event.findById(eventId);
         if (!event) return res.status(404).json({ message: 'Event not found' });
@@ -21,9 +35,11 @@ exports.createBooking = async (req, res) => {
         await booking.save();
         res.status(201).json({ message: 'Booking successful', booking });
     } catch (error) {
+        console.error("Booking error:", error);
         res.status(500).json({ message: 'Booking failed', error });
     }
 };
+
 
 // Get all bookings for current user
 exports.getUserBookings = async (req, res) => {
