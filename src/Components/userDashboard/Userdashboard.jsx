@@ -69,9 +69,24 @@ const UserDashboard = () => {
 
         }
     };
-    const handlepayment = () => {
-        navigate('/payment')
-    }
+    const handlepayment = (booking) => {
+        const event = booking.event;
+
+        const amount = event?.price * booking.numberOfSeats;
+
+        navigate('/payment', {
+            state: {
+                eventId: event._id,
+                eventName: event.name,
+                userId: booking.user,
+                bookingId: booking._id,
+                amount, // total = price * numberOfSeats
+                guestCount: booking.numberOfSeats
+            }
+        });
+
+
+    };
     return (
         <div className="dashboard">
             <aside className="sidebar">
@@ -172,7 +187,7 @@ const UserDashboard = () => {
                                             </p>
 
                                             <small className="event-meta">
-                                                Status: <span className={`status ${booking.status}`}>{booking.status || 'confirmed'}</span> • Paid: ₹{booking.amount || 0}
+                                                Status: <span className={`status ${booking.status}`}>{booking.status || 'confirmed'}</span> • Paid: ₹{booking.price || 0}
                                             </small>
 
                                             {booking.paymentStatus !== 'paid' && (
@@ -206,7 +221,7 @@ const UserDashboard = () => {
                                                 {booking.event?.time || ''} • {booking.event?.location || ''}
                                             </p>
                                             <small className="event-meta">
-                                                Status: <span className="status cancelled">cancelled</span> • Paid: ₹{booking.amount || 0}
+                                                Status: <span className="status cancelled">cancelled</span> • Payment: ₹{booking.status || 0}
                                             </small>
                                         </li>
                                     ))}

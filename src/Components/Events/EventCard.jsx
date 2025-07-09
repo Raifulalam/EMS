@@ -29,6 +29,7 @@ function EventCard({ event }) {
 
                     <EventRegistrationModal
                         eventId={event._id}
+                        price={event.price}
                         isOpen={showBooking}
                         onClose={() => setShowBooking(false)}
                     />

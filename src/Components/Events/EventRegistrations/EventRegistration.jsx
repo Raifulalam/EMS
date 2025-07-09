@@ -3,13 +3,14 @@ import './EventRegistration.css';
 import { UserContext } from '../../Auth/authContext';
 import API from '../../../api';
 
-const EventRegistrationModal = ({ eventId, isOpen, onClose }) => {
+const EventRegistrationModal = ({ eventId, isOpen, onClose, price }) => {
     const { user } = useContext(UserContext);
-    const [eventName, setEventName] = useState('');
     const [guestCount, setGuestCount] = useState(1);
     const [notes, setNotes] = useState('');
     const [bookingSuccess, setBookingSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const totalPrice = price * guestCount;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,24 +19,31 @@ const EventRegistrationModal = ({ eventId, isOpen, onClose }) => {
 
         try {
             setLoading(true);
-
             const token = localStorage.getItem('token');
-            const transactionId = `TXN-${Math.floor(Math.random() * 1000000)}`;
 
-            await API.post(
+            const res = await API.post(
                 '/bookings',
                 {
                     eventId,
                     numberOfSeats: guestCount,
-                    paymentStatus: 'paid',
-                    transactionId
+                    paymentStatus: 'unpaid',
+                    price: totalPrice,
+                    statu: 'unpaid'
                 },
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
 
+            const booking = res.data;
+
             setBookingSuccess(true);
+
+            // Redirect to payment page
+            setTimeout(() => {
+                window.location.href = `/payment?bookingId=${booking._id}&amount=${booking.amount}`;
+            }, 1500);
+
         } catch (error) {
             console.error('❌ Booking failed:', error.response?.data || error.message);
             alert('Booking failed. Please try again.');
@@ -52,7 +60,7 @@ const EventRegistrationModal = ({ eventId, isOpen, onClose }) => {
                 <button className="modal-close" onClick={onClose}>×</button>
 
                 {bookingSuccess ? (
-                    <p className="success-msg">🎉 Booking successful!</p>
+                    <p className="success-msg">🎉 Booking successful! Redirecting to payment...</p>
                 ) : (
                     <>
                         <h2>Register for Event</h2>
@@ -67,7 +75,6 @@ const EventRegistrationModal = ({ eventId, isOpen, onClose }) => {
 
                             <label>Phone</label>
                             <input type="tel" value={user?.phone || ''} disabled />
-
 
                             <label>Number of Guests</label>
                             <input
@@ -84,6 +91,8 @@ const EventRegistrationModal = ({ eventId, isOpen, onClose }) => {
                                 placeholder="Any notes or requests?"
                                 onChange={(e) => setNotes(e.target.value)}
                             ></textarea>
+
+                            <p><strong>Total Price:</strong> ₹{totalPrice}</p>
 
                             <button type="submit" className="register-button" disabled={loading}>
                                 {loading ? 'Booking...' : 'Confirm Booking'}

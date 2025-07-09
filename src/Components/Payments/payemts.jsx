@@ -1,34 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-
+import './EsewaPaymentForm.css'
 const EsewaPaymentForm = () => {
     const { state } = useLocation();
-    const {
-        amount: passedAmount,
-        restaurant,
-        userDetails,
-        selectedTable,
-        selectedTimeslot,
-    } = state || {};
-    console.log('Restaurant:', restaurant);
-    console.log('User:', userDetails);
-    console.log('Table:', selectedTable);
-    console.log('Timeslot:', selectedTimeslot);
 
-    const [amount, setAmount] = useState(500);
-    const [taxAmount, setTaxAmount] = useState(0);
-    const [totalAmount, setTotalAmount] = useState(500);
-    const [transactionUuid, setTransactionUuid] = useState(Date.now());
-    const [productCode, setProductCode] = useState('EPAYTEST');
-    const [productServiceCharge, setProductServiceCharge] = useState(0);
-    const [productDeliveryCharge, setProductDeliveryCharge] = useState(0);
-    const [successUrl, setSuccessUrl] = useState('https://mini-project-ii-6.onrender.com/complete-payment');
-    const [failureUrl, setFailureUrl] = useState('https://developer.esewa.com.np/failure');
+    const {
+        eventId,
+        eventName,
+        userId,
+        bookingId,
+        amount: passedAmount,
+        guestCount
+    } = state || {};
+
+    const [amount] = useState(passedAmount || 0);
+    const [taxAmount] = useState(0);
+    const [totalAmount] = useState(passedAmount || 0);
+    const [transactionUuid] = useState(Date.now().toString());
+    const [productCode] = useState('EPAYTEST');
+    const [productServiceCharge] = useState(0);
+    const [productDeliveryCharge] = useState(0);
+    const [successUrl] = useState('https://mini-project-ii-6.onrender.com/complete-payment');
+    const [failureUrl] = useState('https://developer.esewa.com.np/failure');
     const [signedFieldNames, setSignedFieldNames] = useState('total_amount,transaction_uuid,product_code');
     const [signature, setSignature] = useState('');
 
     useEffect(() => {
-        // Fetch the signature and signed fields from the backend when component mounts or any of the dependencies change
         const fetchSignature = async () => {
             try {
                 const res = await fetch('https://mini-project-ii-6.onrender.com/api/esewa-signature', {
@@ -40,18 +37,12 @@ const EsewaPaymentForm = () => {
                     }),
                 });
 
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-
-                // Try to parse the response body as JSON
                 const data = await res.json();
 
                 if (data.success) {
                     setSignature(data.signature);
                     setSignedFieldNames(data.signed_field_names);
                 } else {
-                    // Handle case where response is not successful
                     alert('Error fetching signature!');
                 }
             } catch (error) {
@@ -60,16 +51,11 @@ const EsewaPaymentForm = () => {
             }
         };
 
-
         fetchSignature();
     }, [totalAmount, transactionUuid]);
 
-    // Handle form submission
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Additional validation if needed
-
-        // Submit the form to eSewa
         document.getElementById('esewa-form').submit();
     };
 
@@ -79,13 +65,9 @@ const EsewaPaymentForm = () => {
             <div className="payment-container">
                 <h3>Payment Summary</h3>
                 <div className="payment-summary">
-
-                    <p><strong>Customer:</strong> {userDetails?.name || 'N/A'}</p>
-                    <p><strong>Email:</strong> {userDetails?.email || 'N/A'}</p>
-                    <p><strong>Phone:</strong> {userDetails?.phone || 'N/A'}</p>
-                    <p><strong>Restaurant:</strong> {restaurant?.name || 'N/A'}</p>
-                    <p><strong>Table:</strong> {selectedTable || 'N/A'}</p>
-                    <p><strong>Time Slot:</strong> {selectedTimeslot || 'N/A'}</p>
+                    <p><strong>Booking ID:</strong> {bookingId}</p>
+                    <p><strong>Event:</strong> {eventName}</p>
+                    <p><strong>Guests:</strong> {guestCount}</p>
                     <p><strong>Total Amount:</strong> NPR {totalAmount}</p>
                 </div>
 
