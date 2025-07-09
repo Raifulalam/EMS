@@ -1,93 +1,99 @@
 import React, { useContext, useState } from 'react';
 import './EventRegistration.css';
 import { UserContext } from '../../Auth/authContext';
+import API from '../../../api';
 
-function EventRegistrationComponent() {
-    const user = useContext(UserContext);
-    const [name, setName] = useState(user.name);
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [eventName, setEventName] = useState("");
-    const [guestCount, setGuestCount] = useState("");
-    const [notes, setNotes] = useState("");
+const EventRegistrationModal = ({ eventId, isOpen, onClose }) => {
+    const { user } = useContext(UserContext);
+    const [eventName, setEventName] = useState('');
+    const [guestCount, setGuestCount] = useState(1);
+    const [notes, setNotes] = useState('');
+    const [bookingSuccess, setBookingSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Name:", name);
-        console.log("Email:", email);
-        console.log("Phone:", phone);
-        console.log("Event:", eventName);
-        console.log("Guest Count:", guestCount);
-        console.log("Notes:", notes);
-        alert("Event registration submitted!");
+
+        if (!eventId) return alert('❌ Event ID missing');
+
+        try {
+            setLoading(true);
+
+            const token = localStorage.getItem('token');
+            const transactionId = `TXN-${Math.floor(Math.random() * 1000000)}`;
+
+            await API.post(
+                '/bookings',
+                {
+                    eventId,
+                    numberOfSeats: guestCount,
+                    paymentStatus: 'paid',
+                    transactionId
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+
+            setBookingSuccess(true);
+        } catch (error) {
+            console.error('❌ Booking failed:', error.response?.data || error.message);
+            alert('Booking failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
+    if (!isOpen) return null;
+
     return (
-        <div className="registration-container">
-            <div className="registration-card">
-                <h2 className="event-title">Event Registration</h2>
-                <p className="event-subtitle">Fill the form below to register for the event.</p>
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <button className="modal-close" onClick={onClose}>×</button>
 
-                <form onSubmit={handleSubmit} className="registration-form">
-                    <label>Full Name</label>
-                    <input
-                        type="text"
-                        placeholder="Enter your full name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
+                {bookingSuccess ? (
+                    <p className="success-msg">🎉 Booking successful!</p>
+                ) : (
+                    <>
+                        <h2>Register for Event</h2>
+                        <p>Your details are pre-filled. Just confirm the info below.</p>
 
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+                        <form onSubmit={handleSubmit} className="registration-form">
+                            <label>Full Name</label>
+                            <input type="text" value={user?.name || ''} disabled />
 
-                    <label>Phone Number</label>
-                    <input
-                        type="tel"
-                        placeholder="Enter your phone number"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        required
-                    />
+                            <label>Email</label>
+                            <input type="email" value={user?.email || ''} disabled />
 
-                    <label>Event Name</label>
-                    <input
-                        type="text"
-                        placeholder="Which event are you attending?"
-                        value={eventName}
-                        onChange={(e) => setEventName(e.target.value)}
-                        required
-                    />
+                            <label>Phone</label>
+                            <input type="tel" value={user?.phone || ''} disabled />
 
-                    <label>Number of Guests</label>
-                    <input
-                        type="number"
-                        placeholder="Guests (including you)"
-                        value={guestCount}
-                        onChange={(e) => setGuestCount(e.target.value)}
-                        required
-                    />
 
-                    <label>Additional Notes</label>
-                    <textarea
-                        placeholder="Any special requests or notes?"
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                    ></textarea>
+                            <label>Number of Guests</label>
+                            <input
+                                type="number"
+                                value={guestCount}
+                                min="1"
+                                onChange={(e) => setGuestCount(Number(e.target.value))}
+                                required
+                            />
 
-                    <button type="submit" className="register-button">Submit Registration</button>
-                </form>
+                            <label>Additional Notes</label>
+                            <textarea
+                                value={notes}
+                                placeholder="Any notes or requests?"
+                                onChange={(e) => setNotes(e.target.value)}
+                            ></textarea>
 
-                <a href="/login" className="pay-link">Already registered? Click to Pay</a>
+                            <button type="submit" className="register-button" disabled={loading}>
+                                {loading ? 'Booking...' : 'Confirm Booking'}
+                            </button>
+                        </form>
+                    </>
+                )}
             </div>
         </div>
     );
-}
+};
 
-export default EventRegistrationComponent;
+export default EventRegistrationModal;

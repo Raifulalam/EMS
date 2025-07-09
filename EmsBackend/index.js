@@ -12,6 +12,8 @@ const eventRoutes = require('./routes/events');
 const userRoutes = require('./routes/user');
 const bookingRoutes = require('./routes/booking');
 const adminRoutes = require('./routes/admin');
+const payment = require('./routes/Payments')
+
 
 const app = express();
 
@@ -39,6 +41,7 @@ app.use('/api/posts', eventRoutes); // if this is intentional
 app.use('/api/users', userRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api', payment)
 
 // Server start
 const PORT = process.env.PORT || 5000;

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { CalendarDays, Users, DollarSign, TrendingUp } from 'lucide-react';
+import { CalendarDays, Users, DollarSign, TrendingUp, Trash2 } from 'lucide-react';
 import './Dashboard.css';
 import API from '../../api';
 import { UserContext } from '../Auth/authContext';
@@ -41,7 +41,7 @@ const UserDashboard = () => {
                     upcomingEvents: all.filter(ev => new Date(ev.date) > now).length,
                     registeredEvents: mine.length,
                     attendedEvents: mine.filter(ev => ev.status === 'attended').length,
-                    totalAttendees: all.reduce((acc, ev) => acc + (ev.attendees || 0), 0),
+                    totalAttendees: "2K+",
                     revenue: mine.reduce((acc, ev) => acc + (ev.amount || 0), 0),
                     conversionRate: all.length ? ((mine.length / all.length) * 100).toFixed(1) : 0
                 });
@@ -55,6 +55,18 @@ const UserDashboard = () => {
     }, []);
 
     if (loading) return <div className="loading">Loading dashboard...</div>;
+    const handleCancelBooking = async (bookingId) => {
+        try {
+            await API.patch(`/bookings/${bookingId}/cancel`);
+            setMyEvents(prev => prev.map(b =>
+                b._id === bookingId ? { ...b, status: 'cancelled' } : b
+            ));
+
+        } catch (error) {
+            console.error('Cancel failed:', error);
+
+        }
+    };
 
     return (
         <div className="dashboard">
@@ -80,42 +92,42 @@ const UserDashboard = () => {
                 </header>
 
                 <section className="stats">
-                    <div className="stat-card">
+                    <div className="stat-card total-events">
                         <CalendarDays size={20} />
                         <div>
                             <h3>{stats.totalEvents}</h3>
                             <p>Total Events</p>
                         </div>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card upcoming-events">
                         <CalendarDays size={20} />
                         <div>
                             <h3>{stats.upcomingEvents}</h3>
                             <p>Upcoming Events</p>
                         </div>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card registered-events">
                         <Users size={20} />
                         <div>
                             <h3>{stats.registeredEvents}</h3>
                             <p>Registered Events</p>
                         </div>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card attended-events">
                         <TrendingUp size={20} />
                         <div>
                             <h3>{stats.attendedEvents}</h3>
                             <p>Events Attended</p>
                         </div>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card total-attendees">
                         <Users size={20} />
                         <div>
                             <h3>{stats.totalAttendees}</h3>
                             <p>Total Attendees (All Events)</p>
                         </div>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card total-paid">
                         <DollarSign size={20} />
                         <div>
                             <h3>₹{stats.revenue}</h3>
@@ -124,20 +136,69 @@ const UserDashboard = () => {
                     </div>
                 </section>
 
+
                 <section className="activity-events">
-                    <div className="upcoming">
-                        <h4>My Registered Events</h4>
-                        <ul>
-                            {myEvents.slice(0, 4).map((event, i) => (
-                                <li key={i}>
-                                    <strong>{event.title}</strong>
-                                    <p>{event.date} • {event.time} • {event.location}</p>
-                                    <small>Status: {event.status} • Paid: ₹{event.amount || '0'}</small>
-                                </li>
-                            ))}
-                        </ul>
+                    {/* Left Column - Active Bookings */}
+                    <div className="events-column">
+                        <h4>📅 My Registered Events</h4>
+                        <h5>✅ Active Bookings</h5>
+                        <div className="scrollable-list">
+                            <ul className="event-list">
+                                {myEvents.filter(ev => ev.status !== 'cancelled').length === 0 && <li>No active bookings.</li>}
+                                {myEvents
+                                    .filter(ev => ev.status !== 'cancelled')
+                                    .map((booking, i) => (
+                                        <li key={i} className="event-item">
+                                            <div className="event-header">
+                                                <strong className="event-title">{booking.event?.name || 'Untitled'}</strong>
+                                                <Trash2
+                                                    size={18}
+                                                    className="delete-icon"
+                                                    title="Cancel Booking"
+                                                    onClick={() => handleCancelBooking(booking._id)}
+                                                />
+                                            </div>
+                                            <p className="event-details">
+                                                {booking.event?.date ? new Date(booking.event.date).toLocaleDateString() : 'N/A'} •{' '}
+                                                {booking.event?.time || ''} • {booking.event?.location || ''}
+                                            </p>
+                                            <small className="event-meta">
+                                                Status: <span className={`status ${booking.status}`}>{booking.status || 'confirmed'}</span> • Paid: ₹{booking.amount || 0}
+                                            </small>
+                                        </li>
+                                    ))}
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* Right Column - Cancelled Bookings */}
+                    <div className="notify-column">
+                        <h4>❌ Cancelled Bookings</h4>
+                        <div className="scrollable-list">
+                            <ul className="event-list">
+                                {myEvents.filter(ev => ev.status === 'cancelled').length === 0 && <li>No cancelled bookings.</li>}
+                                {myEvents
+                                    .filter(ev => ev.status === 'cancelled')
+                                    .map((booking, i) => (
+                                        <li key={i} className="event-item cancelled">
+                                            <strong className="event-title">{booking.event?.name || 'Untitled'}</strong>
+                                            <p className="event-details">
+                                                {booking.event?.date ? new Date(booking.event.date).toLocaleDateString() : 'N/A'} •{' '}
+                                                {booking.event?.time || ''} • {booking.event?.location || ''}
+                                            </p>
+                                            <small className="event-meta">
+                                                Status: <span className="status cancelled">cancelled</span> • Paid: ₹{booking.amount || 0}
+                                            </small>
+                                        </li>
+                                    ))}
+                            </ul>
+                        </div>
                     </div>
                 </section>
+
+
+
+
             </main>
         </div>
     );
