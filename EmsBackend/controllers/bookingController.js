@@ -5,7 +5,7 @@ const Event = require('../models/Event');
 // Create a new booking
 exports.createBooking = async (req, res) => {
     try {
-        const { eventId, numberOfSeats, paymentStatus, transactionId } = req.body;
+        const { eventId, numberOfSeats, paymentStatus, price } = req.body;
 
         // Check if req.user is attached properly
         if (!req.user || !req.user._id) {
@@ -15,7 +15,7 @@ exports.createBooking = async (req, res) => {
         const userId = req.user._id;
 
         // Validate required fields
-        if (!eventId || !numberOfSeats || !paymentStatus || !transactionId) {
+        if (!eventId || !numberOfSeats || !paymentStatus || !price) {
             return res.status(400).json({ message: 'Missing required booking fields' });
         }
 
@@ -27,7 +27,7 @@ exports.createBooking = async (req, res) => {
             user: userId,
             numberOfSeats,
             paymentStatus,
-            transactionId
+            price
         });
 
         await booking.save();

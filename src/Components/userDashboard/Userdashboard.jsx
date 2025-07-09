@@ -3,6 +3,7 @@ import { CalendarDays, Users, DollarSign, TrendingUp, Trash2 } from 'lucide-reac
 import './Dashboard.css';
 import API from '../../api';
 import { UserContext } from '../Auth/authContext';
+import { useNavigate } from 'react-router-dom';
 
 const UserDashboard = () => {
     const { user } = useContext(UserContext);
@@ -18,6 +19,7 @@ const UserDashboard = () => {
         conversionRate: 0
     });
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -67,7 +69,9 @@ const UserDashboard = () => {
 
         }
     };
-
+    const handlepayment = () => {
+        navigate('/payment')
+    }
     return (
         <div className="dashboard">
             <aside className="sidebar">
@@ -144,7 +148,10 @@ const UserDashboard = () => {
                         <h5>✅ Active Bookings</h5>
                         <div className="scrollable-list">
                             <ul className="event-list">
-                                {myEvents.filter(ev => ev.status !== 'cancelled').length === 0 && <li>No active bookings.</li>}
+                                {myEvents.filter(ev => ev.status !== 'cancelled').length === 0 && (
+                                    <li>No active bookings.</li>
+                                )}
+
                                 {myEvents
                                     .filter(ev => ev.status !== 'cancelled')
                                     .map((booking, i) => (
@@ -158,16 +165,28 @@ const UserDashboard = () => {
                                                     onClick={() => handleCancelBooking(booking._id)}
                                                 />
                                             </div>
+
                                             <p className="event-details">
                                                 {booking.event?.date ? new Date(booking.event.date).toLocaleDateString() : 'N/A'} •{' '}
                                                 {booking.event?.time || ''} • {booking.event?.location || ''}
                                             </p>
+
                                             <small className="event-meta">
                                                 Status: <span className={`status ${booking.status}`}>{booking.status || 'confirmed'}</span> • Paid: ₹{booking.amount || 0}
                                             </small>
+
+                                            {booking.paymentStatus !== 'paid' && (
+                                                <button
+                                                    className="payment-btn"
+                                                    onClick={() => handlepayment(booking)}
+                                                >
+                                                    Pay Now
+                                                </button>
+                                            )}
                                         </li>
                                     ))}
                             </ul>
+
                         </div>
                     </div>
 

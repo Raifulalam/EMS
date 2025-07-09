@@ -13,6 +13,7 @@ import AdminEventManager from './Admin/AdminDashboard/EventManager';
 import UserList from './Admin/AdminDashboard/Userlist';
 import MyBookings from './Components/Events/EventRegistrations/MyBookings';
 import UserDashboard from './Components/userDashboard/Userdashboard';
+import EsewaPaymentForm from './Components/Payments/payemts';
 function App() {
   return (
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/admin/events" element={<AdminEventManager />} />
           <Route path="/admin/users" element={<UserList />} />
           <Route path="/my-bookings" element={<MyBookings />} />
+          <Route path="/payment" element={<EsewaPaymentForm />} />
 
 
         </Routes>
