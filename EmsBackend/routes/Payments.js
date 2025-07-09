@@ -6,9 +6,9 @@ const crypto = require('crypto');
 require('dotenv').config();
 
 const { getEsewaPaymentHash, verifyEsewaPayment } = require("./Esewa");
-const Payment = require("../Model/paymentsModel");
-const Item = require("../Model/itemModel");
-const PurchasedItem = require("../Model/purchasedModel");
+const Payment = require('../models/paymentsModel')
+const Item = require("../model/itemModel");
+const PurchasedItem = require("../model/purchasedModel");
 Router.post("/initialize-esewa", async (req, res) => {
     try {
         const { itemId, totalPrice } = req.body;
