@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import './EsewaPaymentForm.css'
 const EsewaPaymentForm = () => {
     const { state } = useLocation();
+    const location = useLocation();
 
     const {
         eventId,

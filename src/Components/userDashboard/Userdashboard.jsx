@@ -31,7 +31,7 @@ const UserDashboard = () => {
 
                 const all = eventsRes.data;
                 const mine = registeredRes.data;
-                console.log(user)
+
 
                 setAllEvents(all);
                 setMyEvents(mine);

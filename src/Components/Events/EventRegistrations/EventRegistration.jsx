@@ -41,7 +41,7 @@ const EventRegistrationModal = ({ eventId, isOpen, onClose, price }) => {
 
             // Redirect to payment page
             setTimeout(() => {
-                window.location.href = `/payment?bookingId=${booking._id}&amount=${booking.amount}`;
+                window.location.href = `/dashboard`;
             }, 1500);
 
         } catch (error) {
