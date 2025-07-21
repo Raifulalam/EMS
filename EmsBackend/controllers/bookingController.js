@@ -70,7 +70,6 @@ exports.cancelBooking = async (req, res) => {
     }
 };
 // controllers/bookingController.js
-const Booking = require('../models/Booking');
 
 exports.getBookingById = async (req, res) => {
     try {
