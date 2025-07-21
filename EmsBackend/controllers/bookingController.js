@@ -69,6 +69,9 @@ exports.cancelBooking = async (req, res) => {
         res.status(500).json({ message: 'Failed to cancel booking', error });
     }
 };
+// controllers/bookingController.js
+const Booking = require('../models/Booking');
+
 exports.getBookingById = async (req, res) => {
     try {
         const booking = await Booking.findById(req.params.id)
@@ -76,12 +79,12 @@ exports.getBookingById = async (req, res) => {
             .populate('user');
 
         if (!booking) {
-            return res.status(404).json({ success: false, message: 'Booking not found' });
+            return res.status(404).json({ message: 'Booking not found' });
         }
 
-        res.status(200).json({ success: true, booking });
-    } catch (err) {
-        console.error("Error fetching booking:", err);
-        res.status(500).json({ success: false, message: 'Server error' });
+        res.status(200).json(booking);
+    } catch (error) {
+        console.error('Error fetching booking:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
