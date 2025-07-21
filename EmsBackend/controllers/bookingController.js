@@ -70,23 +70,18 @@ exports.cancelBooking = async (req, res) => {
     }
 };
 exports.getBookingById = async (req, res) => {
-    const bookingId = req.params.id;
-
     try {
-        const booking = await Booking.findById(bookingId)
-            .populate('userId')
-            .populate('event');
+        const booking = await Booking.findById(req.params.id)
+            .populate('event')
+            .populate('user');
 
         if (!booking) {
             return res.status(404).json({ success: false, message: 'Booking not found' });
         }
 
-        res.status(200).json({
-            success: true,
-            booking
-        });
-    } catch (error) {
-        console.error('Error fetching booking:', error.message);
-        res.status(500).json({ success: false, message: 'Server Error' });
+        res.status(200).json({ success: true, booking });
+    } catch (err) {
+        console.error("Error fetching booking:", err);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 };
