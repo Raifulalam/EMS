@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const { getEsewaPaymentHash, verifyEsewaPayment } = require("./Esewa");
 const Payment = require('../models/paymentsModel');
-const Booking = require("../models/bookingModel");
+const Booking = require("../models/booking");
 
 // Initialize payment
 Router.post("/initialize-esewa", async (req, res) => {
