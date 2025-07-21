@@ -4,9 +4,9 @@ const paymentSchema = new mongoose.Schema(
     {
         transactionId: { type: String, unique: true },
         pidx: { type: String, unique: true },
-        productId: {
+        booking: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "PurchasedItem",
+            ref: "Booking",
             required: true,
         },
         amount: { type: Number, required: true },
@@ -26,5 +26,5 @@ const paymentSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-const Payment = mongoose.model("payment", paymentSchema);
-module.exports = Payment;
+
+module.exports = mongoose.model("Payment", paymentSchema);

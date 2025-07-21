@@ -6,51 +6,44 @@ const crypto = require('crypto');
 require('dotenv').config();
 
 const { getEsewaPaymentHash, verifyEsewaPayment } = require("./Esewa");
-const Payment = require('../models/paymentsModel')
-const Item = require("../models/itemModel");
-const PurchasedItem = require("../models/purchasedModel");
+const Payment = require('../models/paymentsModel');
+const Booking = require("../models/bookingModel");
+
+// Initialize payment
 Router.post("/initialize-esewa", async (req, res) => {
     try {
-        const { itemId, totalPrice } = req.body;
+        const { bookingId, totalPrice } = req.body;
 
-        if (!itemId || !totalPrice) {
-            return res.status(400).send({
+        if (!bookingId || !totalPrice) {
+            return res.status(400).json({
                 success: false,
-                message: "ItemId and TotalPrice are required.",
+                message: "Booking ID and total price are required.",
             });
         }
 
-        // Validate item exists and price matches
-        const itemData = await Item.findOne({
-            _id: itemId,
+        // Validate booking exists and amount matches
+        const bookingData = await Booking.findOne({
+            _id: bookingId,
             price: Number(totalPrice),
         });
 
-        if (!itemData) {
-            return res.status(400).send({
+        if (!bookingData) {
+            return res.status(400).json({
                 success: false,
-                message: "Item not found or price mismatch.",
+                message: "Booking not found or price mismatch.",
             });
         }
 
-        // Create a record for the purchase
-        const purchasedItemData = await PurchasedItem.create({
-            item: itemId,
-            paymentMethod: "esewa",
-            totalPrice: totalPrice,
-        });
-
-        // Initiate payment with eSewa
+        // Initiate eSewa payment hash
         const paymentInitiate = await getEsewaPaymentHash({
             amount: totalPrice,
-            transaction_uuid: purchasedItemData._id,
+            transaction_uuid: bookingData._id,
         });
 
-        // Respond with payment details
         res.json({
             success: true,
             payment: paymentInitiate,
-            purchasedItemData,
+            bookingData,
         });
     } catch (error) {
         res.status(500).json({
@@ -60,75 +53,72 @@ Router.post("/initialize-esewa", async (req, res) => {
     }
 });
 
-// GET route to complete payment
+// Handle payment success callback
 Router.get("/complete-payment", async (req, res) => {
-    const { data } = req.query; // Data received from eSewa's redirect
+    const { data } = req.query;
 
     try {
-        // Verify payment with eSewa
         const paymentInfo = await verifyEsewaPayment(data);
 
-        // Find the purchased item using the transaction UUID
-        const purchasedItemData = await PurchasedItem.findById(
+        // Get booking from UUID
+        const bookingData = await Booking.findById(
             paymentInfo.response.transaction_uuid
         );
 
-        if (!purchasedItemData) {
-            return res.status(500).json({
+        if (!bookingData) {
+            return res.status(404).json({
                 success: false,
-                message: "Purchase not found",
+                message: "Booking not found.",
             });
         }
 
-        // Create a new payment record in the database
+        // Save payment record
         const paymentData = await Payment.create({
             pidx: paymentInfo.decodedData.transaction_code,
             transactionId: paymentInfo.decodedData.transaction_code,
             productId: paymentInfo.response.transaction_uuid,
-            amount: purchasedItemData.totalPrice,
+            amount: bookingData.price,
             dataFromVerificationReq: paymentInfo,
             apiQueryFromUser: req.query,
             paymentGateway: "esewa",
             status: "success",
         });
 
-        // Update the purchased item status to 'completed'
-        await PurchasedItem.findByIdAndUpdate(
-            paymentInfo.response.transaction_uuid,
-            { $set: { status: "completed" } }
-        );
-
-        // Respond with success message
-        res.json({
-            success: true,
-            message: "Payment successful",
-            paymentData,
+        // Update booking status to confirmed
+        await Booking.findByIdAndUpdate(bookingData._id, {
+            $set: { status: "confirmed" },
         });
+
+        res.redirect(`/payment-success?bookingId=${bookingData._id}`);
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: "An error occurred during payment verification",
+            message: "Payment verification failed.",
             error: error.message,
         });
     }
 });
 
-// Route to create a test item
-Router.get("/create-item", async (req, res) => {
-    let itemData = await Item.create({
-        name: "Headphone",
-        price: 500,
-        inStock: true,
-        category: "vayo pardaina",
-    });
-    res.json({
-        success: true,
-        item: itemData,
-    });
+// Payment cancel or failure route
+Router.get("/cancel-payment", async (req, res) => {
+    const { bookingId } = req.query;
+
+    try {
+        await Booking.findByIdAndUpdate(bookingId, {
+            $set: { status: "cancelled" },
+        });
+
+        res.redirect(`/payment-failed?bookingId=${bookingId}`);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Cancel payment update failed.",
+            error: error.message,
+        });
+    }
 });
-// Route to get signed hash and required values
 
-
+// Signature route
 Router.post("/esewa-signature", (req, res) => {
     const { amount, transaction_uuid } = req.body;
 
@@ -141,10 +131,8 @@ Router.post("/esewa-signature", (req, res) => {
     res.json({
         success: true,
         signature,
-        signed_field_names: "total_amount,transaction_uuid,product_code"
+        signed_field_names: "total_amount,transaction_uuid,product_code",
     });
 });
 
-
 module.exports = Router;
-
