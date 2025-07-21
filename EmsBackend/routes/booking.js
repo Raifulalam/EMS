@@ -6,5 +6,6 @@ const authMiddleware = require('../middleware/auth'); // Protect routes
 router.post('/', authMiddleware, bookingController.createBooking);
 router.get('/', authMiddleware, bookingController.getUserBookings);
 router.patch('/:id/cancel', authMiddleware, bookingController.cancelBooking);
+router.get('/bookings/:id', bookingController.getBookingById);
 
 module.exports = router;
