@@ -55,15 +55,12 @@ Router.post("/initialize-esewa", async (req, res) => {
 
 // Handle payment success callback
 Router.get("/complete-payment", async (req, res) => {
-    const { data } = req.query;
+    const { bookingId } = req.query;
 
     try {
-        const paymentInfo = await verifyEsewaPayment(data);
+        const paymentInfo = await verifyEsewaPayment(bookingId); // Or whatever is expected
 
-        // Get booking from UUID
-        const bookingData = await Booking.findById(
-            paymentInfo.response.transaction_uuid
-        );
+        const bookingData = await Booking.findById(bookingId);
 
         if (!bookingData) {
             return res.status(404).json({
@@ -72,11 +69,10 @@ Router.get("/complete-payment", async (req, res) => {
             });
         }
 
-        // Save payment record
-        const paymentData = await Payment.create({
+        await Payment.create({
             pidx: paymentInfo.decodedData.transaction_code,
             transactionId: paymentInfo.decodedData.transaction_code,
-            productId: paymentInfo.response.transaction_uuid,
+            productId: bookingId,
             amount: bookingData.price,
             dataFromVerificationReq: paymentInfo,
             apiQueryFromUser: req.query,
@@ -84,13 +80,13 @@ Router.get("/complete-payment", async (req, res) => {
             status: "success",
         });
 
-        // Update booking status to confirmed
         await Booking.findByIdAndUpdate(bookingData._id, {
             $set: { status: "confirmed" },
         });
 
         res.redirect(`/payment-success?bookingId=${bookingData._id}`);
     } catch (error) {
+        console.error("Payment error:", error);
         res.status(500).json({
             success: false,
             message: "Payment verification failed.",
@@ -98,6 +94,7 @@ Router.get("/complete-payment", async (req, res) => {
         });
     }
 });
+
 
 // Payment cancel or failure route
 Router.get("/cancel-payment", async (req, res) => {
