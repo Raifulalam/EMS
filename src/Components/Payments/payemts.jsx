@@ -1,31 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import './EsewaPaymentForm.css'
+import './EsewaPaymentForm.css';
+import API from '../../api';
+
 const EsewaPaymentForm = () => {
-    const { state } = useLocation();
     const location = useLocation();
+    const { state } = location;
 
-    const {
-        eventId,
-        eventName,
-        userId,
-        bookingId,
-        amount: passedAmount,
-        guestCount
-    } = state || {};
+    const [bookingId, setBookingId] = useState(state?.bookingId || '');
+    const [amount, setAmount] = useState(state?.amount || 0);
+    const [guestCount, setGuestCount] = useState(state?.guestCount || '');
+    const [eventName, setEventName] = useState(state?.eventName || '');
+    const [userId, setUserId] = useState(state?.userId || '');
+    const [loading, setLoading] = useState(true);
 
-    const [amount] = useState(passedAmount || 0);
+    // Fallback to query params
+    useEffect(() => {
+        if (!state) {
+            const queryParams = new URLSearchParams(location.search);
+            setBookingId(queryParams.get('bookingId') || '');
+            setAmount(queryParams.get('amount') || 0);
+            setGuestCount(queryParams.get('guest') || '');
+            setEventName(queryParams.get('event') || '');
+        }
+    }, [location.search, state]);
+
+
+
+
+
     const [taxAmount] = useState(0);
-    const [totalAmount] = useState(passedAmount || 0);
     const [transactionUuid] = useState(Date.now().toString());
     const [productCode] = useState('EPAYTEST');
     const [productServiceCharge] = useState(0);
     const [productDeliveryCharge] = useState(0);
-    const [successUrl] = useState('https://mini-project-ii-6.onrender.com/complete-payment');
-    const [failureUrl] = useState('https://developer.esewa.com.np/failure');
+    const [successUrl] = useState(`https://mini-project-ii-6.onrender.com/complete-payment?bookingId=${bookingId}`);
+    const [failureUrl] = useState('https://mini-project-ii-6.onrender.com/payment-failed');
     const [signedFieldNames, setSignedFieldNames] = useState('total_amount,transaction_uuid,product_code');
     const [signature, setSignature] = useState('');
 
+    // Fetch eSewa signature
     useEffect(() => {
         const fetchSignature = async () => {
             try {
@@ -33,7 +47,7 @@ const EsewaPaymentForm = () => {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        amount: totalAmount,
+                        amount,
                         transaction_uuid: transactionUuid,
                     }),
                 });
@@ -49,27 +63,33 @@ const EsewaPaymentForm = () => {
             } catch (error) {
                 console.error('Fetch error:', error);
                 alert('There was an error fetching the signature!');
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchSignature();
-    }, [totalAmount, transactionUuid]);
+    }, [amount, transactionUuid]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         document.getElementById('esewa-form').submit();
     };
 
+    if (loading) {
+        return <div className="loader">Preparing payment...</div>;
+    }
+
     return (
         <div>
-            <h2>eSewa Payment Form</h2>
+            <h2>eSewa Payment</h2>
             <div className="payment-container">
                 <h3>Payment Summary</h3>
                 <div className="payment-summary">
                     <p><strong>Booking ID:</strong> {bookingId}</p>
                     <p><strong>Event:</strong> {eventName}</p>
                     <p><strong>Guests:</strong> {guestCount}</p>
-                    <p><strong>Total Amount:</strong> NPR {totalAmount}</p>
+                    <p><strong>Amount:</strong> NPR {amount}</p>
                 </div>
 
                 <form
@@ -82,7 +102,7 @@ const EsewaPaymentForm = () => {
                 >
                     <input type="hidden" name="amount" value={amount} />
                     <input type="hidden" name="tax_amount" value={taxAmount} />
-                    <input type="hidden" name="total_amount" value={totalAmount} />
+                    <input type="hidden" name="total_amount" value={amount} />
                     <input type="hidden" name="transaction_uuid" value={transactionUuid} />
                     <input type="hidden" name="product_code" value={productCode} />
                     <input type="hidden" name="product_service_charge" value={productServiceCharge} />
@@ -92,7 +112,9 @@ const EsewaPaymentForm = () => {
                     <input type="hidden" name="signed_field_names" value={signedFieldNames} />
                     <input type="hidden" name="signature" value={signature} />
 
-                    <button type="submit" className="esewa-pay-btn">Pay with eSewa</button>
+                    <button type="submit" className="esewa-pay-btn" disabled={!signature}>
+                        {signature ? 'Pay with eSewa' : 'Loading...'}
+                    </button>
                 </form>
             </div>
         </div>

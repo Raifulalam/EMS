@@ -34,15 +34,16 @@ const EventRegistrationModal = ({ eventId, isOpen, onClose, price }) => {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
-
-            const booking = res.data;
+            const booking = res.data.booking; // or res.data, depending on your API
+            console.log(booking); // check structure here
 
             setBookingSuccess(true);
 
-            // Redirect to payment page
             setTimeout(() => {
-                window.location.href = `/dashboard`;
+                window.location.href = `/payment?bookingId=${booking._id}&amount=${booking.price}`;
             }, 1500);
+
+
 
         } catch (error) {
             console.error('❌ Booking failed:', error.response?.data || error.message);

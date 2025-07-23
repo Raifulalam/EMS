@@ -14,6 +14,10 @@ import UserList from './Admin/AdminDashboard/Userlist';
 import MyBookings from './Components/Events/EventRegistrations/MyBookings';
 import UserDashboard from './Components/userDashboard/Userdashboard';
 import EsewaPaymentForm from './Components/Payments/payemts';
+import PaymentFailed from './Components/Payments/PaymentFailed';
+import PaymentSuccess from './Components/Payments/PaymentSuccess';
+
+import { Toaster } from 'react-hot-toast';
 function App() {
   return (
 
@@ -21,7 +25,7 @@ function App() {
       <UserProvider>
         <DynamicHeader />
 
-
+        <Toaster position="top-right" />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginComponents />} />
@@ -34,6 +38,8 @@ function App() {
           <Route path="/admin/users" element={<UserList />} />
           <Route path="/my-bookings" element={<MyBookings />} />
           <Route path="/payment" element={<EsewaPaymentForm />} />
+          <Route path="/complete-payment" element={<PaymentSuccess />} />
+          <Route path="/payment-failed" element={<PaymentFailed />} />
 
 
         </Routes>
