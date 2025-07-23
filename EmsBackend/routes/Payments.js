@@ -55,7 +55,7 @@ Router.post("/initialize-esewa", async (req, res) => {
 
 // Handle payment success callback
 
-router.get("/complete-payment", async (req, res) => {
+Router.get("/complete-payment", async (req, res) => {
     const { data, bookingId } = req.query;
 
     if (!data || !bookingId) {
