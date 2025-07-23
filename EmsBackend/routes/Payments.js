@@ -61,7 +61,7 @@ Router.get("/complete-payment", async (req, res) => {
     if (!data || !bookingId) {
         return res.status(400).json({
             success: false,
-            message: "Missing bookingId or encoded data from payment gateway",
+            message: "Missing required payment verification data",
         });
     }
 
@@ -70,17 +70,13 @@ Router.get("/complete-payment", async (req, res) => {
 
         const { decodedData } = paymentInfo;
 
-        // Update booking status in DB
         await Booking.findByIdAndUpdate(bookingId, {
             paymentStatus: "Paid",
             transactionCode: decodedData.transaction_code,
         });
 
-        return res.status(200).json({
-            success: true,
-            message: "Payment verified successfully",
-            paymentInfo,
-        });
+        // Optionally redirect to a frontend success page
+        return res.redirect(`/payment-success?bookingId=${bookingId}`);
     } catch (err) {
         return res.status(400).json({
             success: false,
@@ -89,6 +85,7 @@ Router.get("/complete-payment", async (req, res) => {
         });
     }
 });
+
 
 
 
