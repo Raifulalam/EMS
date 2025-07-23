@@ -55,36 +55,35 @@ Router.post("/initialize-esewa", async (req, res) => {
 
 // Handle payment success callback
 
-Router.get("/complete-payment", async (req, res) => {
-    const { data, bookingId } = req.query;
+Router.get('/complete-payment', async (req, res) => {
+    const { bookingId, data } = req.query;
 
     if (!data || !bookingId) {
         return res.status(400).json({
             success: false,
-            message: "Missing required payment verification data",
+            message: "Missing bookingId or data in query params",
         });
     }
 
     try {
-        const paymentInfo = await verifyEsewaPayment(data);
+        const result = await verifyEsewaPayment(data);
 
-        const { decodedData } = paymentInfo;
+        // Update your DB booking using bookingId here...
 
-        await Booking.findByIdAndUpdate(bookingId, {
-            paymentStatus: "Paid",
-            transactionCode: decodedData.transaction_code,
+        res.status(200).json({
+            success: true,
+            message: "Payment verified successfully",
+            transaction: result.response,
         });
-
-        // Optionally redirect to a frontend success page
-        return res.redirect(`/payment-success?bookingId=${bookingId}`);
-    } catch (err) {
-        return res.status(400).json({
+    } catch (error) {
+        res.status(500).json({
             success: false,
             message: "An error occurred during payment verification",
-            error: err.message,
+            error: error.message,
         });
     }
 });
+
 
 
 
