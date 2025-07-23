@@ -54,46 +54,44 @@ Router.post("/initialize-esewa", async (req, res) => {
 });
 
 // Handle payment success callback
+
 Router.get("/complete-payment", async (req, res) => {
-    const { bookingId } = req.query;
+    const { data } = req.query;
+
+    if (!data) {
+        return res.status(400).json({
+            success: false,
+            message: "Missing encoded data from payment gateway",
+        });
+    }
 
     try {
-        const paymentInfo = await verifyEsewaPayment(bookingId); // Or whatever is expected
+        const paymentInfo = await verifyEsewaPayment(data);
 
-        const bookingData = await Booking.findById(bookingId);
+        // You can now mark the booking as paid
+        const { decodedData } = paymentInfo;
+        const bookingId = decodedData.transaction_uuid;
 
-        if (!bookingData) {
-            return res.status(404).json({
-                success: false,
-                message: "Booking not found.",
-            });
-        }
-
-        await Payment.create({
-            pidx: paymentInfo.decodedData.transaction_code,
-            transactionId: paymentInfo.decodedData.transaction_code,
-            productId: bookingId,
-            amount: bookingData.price,
-            dataFromVerificationReq: paymentInfo,
-            apiQueryFromUser: req.query,
-            paymentGateway: "esewa",
-            status: "success",
+        // Update booking status in DB
+        await Booking.findByIdAndUpdate(bookingId, {
+            paymentStatus: "Paid",
+            transactionCode: decodedData.transaction_code,
         });
 
-        await Booking.findByIdAndUpdate(bookingData._id, {
-            $set: { status: "confirmed" },
+        return res.status(200).json({
+            success: true,
+            message: "Payment verified successfully",
+            paymentInfo,
         });
-
-        res.redirect(`/payment-success?bookingId=${bookingData._id}`);
-    } catch (error) {
-        console.error("Payment error:", error);
-        res.status(500).json({
+    } catch (err) {
+        return res.status(400).json({
             success: false,
-            message: "Payment verification failed.",
-            error: error.message,
+            message: "An error occurred during payment verification",
+            error: err.message,
         });
     }
 });
+
 
 
 // Payment cancel or failure route
