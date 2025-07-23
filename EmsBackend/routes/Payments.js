@@ -55,22 +55,20 @@ Router.post("/initialize-esewa", async (req, res) => {
 
 // Handle payment success callback
 
-Router.get("/complete-payment", async (req, res) => {
-    const { data } = req.query;
+router.get("/complete-payment", async (req, res) => {
+    const { data, bookingId } = req.query;
 
-    if (!data) {
+    if (!data || !bookingId) {
         return res.status(400).json({
             success: false,
-            message: "Missing encoded data from payment gateway",
+            message: "Missing bookingId or encoded data from payment gateway",
         });
     }
 
     try {
         const paymentInfo = await verifyEsewaPayment(data);
 
-        // You can now mark the booking as paid
         const { decodedData } = paymentInfo;
-        const bookingId = decodedData.transaction_uuid;
 
         // Update booking status in DB
         await Booking.findByIdAndUpdate(bookingId, {
@@ -91,6 +89,7 @@ Router.get("/complete-payment", async (req, res) => {
         });
     }
 });
+
 
 
 
